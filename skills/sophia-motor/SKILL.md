@@ -42,7 +42,7 @@ If the user is on a different version than this skill assumes, the source is the
 
 ### 2. Workspace must be **outside any repo**
 
-`MotorConfig.workspace_root` defaults to `~/.sophia-motor/runs/`. **Never** point it at a folder whose ancestors contain `.git/`, `pyproject.toml`, or `package.json`. The bundled Claude CLI does upward "project root discovery" and, if triggered, re-paths its session/backup state into a deeply-nested fallback location — your runs end up scattered. No env var (including `CLAUDE_PROJECT_DIR`) overrides this. In Docker: `MotorConfig(workspace_root="/data/runs")` with `/data` mounted.
+`MotorConfig.workspace_root` defaults to `<tempfile.gettempdir()>/sophia-motor/runs/` (e.g. `/tmp/sophia-motor/runs/` on Linux) — **ephemeral by design**, the OS sweeps it (Linux: `systemd-tmpfiles` >10gg; macOS: reboot; Windows: cyclic). Motor was built as a fire-and-forget intelligent function; you don't manage the storage. **Opt in to persistence** by passing a path: `MotorConfig(workspace_root="~/.sophia-motor/runs")` or `SOPHIA_MOTOR_WORKSPACE_ROOT=...`. **Never** point it at a folder whose ancestors contain `.git/`, `pyproject.toml`, or `package.json`. The bundled Claude CLI does upward "project root discovery" and, if triggered, re-paths its session/backup state into a deeply-nested fallback location — your runs end up scattered. No env var (including `CLAUDE_PROJECT_DIR`) overrides this. In Docker: `MotorConfig(workspace_root="/data/runs")` with `/data` mounted for audit retention across restarts.
 
 ### 3. `Motor()` is a top-level singleton, not a per-request object
 
@@ -154,8 +154,8 @@ project/
 ├── .env                       # ANTHROPIC_API_KEY=sk-ant-...
 ├── motor.py                   # `motor = Motor(MotorConfig(...))` at module level
 ├── ...                        # rest of the application
-└── (transient, auto-managed)
-    ~/.sophia-motor/runs/       # per-run workspace + audit (outside repo)
+└── (transient, OS-managed)
+    /tmp/sophia-motor/runs/     # per-run workspace + audit (default: tempdir, OS-swept)
 ```
 
 The user does **not** need to set up Docker, daemons, or external MCP processes. Pip install, write `motor.py`, call from anywhere.
@@ -299,4 +299,4 @@ Sub-docs to load if you go deeper from here:
 
 ---
 
-*Skill version: 0.1, built against `sophia-motor==0.5.0`. When the installed version differs, trust the source over this skill (golden rule #1).*
+*Skill version: 0.5.1, built against `sophia-motor==0.5.1`. When the installed version differs, trust the source over this skill (golden rule #1).*

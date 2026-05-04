@@ -66,19 +66,18 @@ asyncio.run(main())
 python first_run.py
 ```
 
-Expected: a printed sentence, cost a few tenths of a cent, and a path under `~/.sophia-motor/runs/run-<ts>-<hex>/audit/` where you can `cat request_001.json` to see the actual `/v1/messages` body sent to Anthropic.
+Expected: a printed sentence, cost a few tenths of a cent, and a path under `<tempdir>/sophia-motor/runs/run-<ts>-<hex>/audit/` (e.g. `/tmp/sophia-motor/runs/...` on Linux) where you can `cat request_001.json` to see the actual `/v1/messages` body sent to Anthropic.
 
 ## What the first run creates
 
-- **Workspace root**: `~/.sophia-motor/runs/` (per [`MotorConfig.workspace_root`](reference.md#motorconfig-fields))
+- **Workspace root**: `<tempfile.gettempdir()>/sophia-motor/runs/` by default (e.g. `/tmp/sophia-motor/runs/` on Linux) — **ephemeral by design**, the OS sweeps it (Linux: `systemd-tmpfiles` >10gg; macOS: reboot; Windows: cyclic). Motor is a fire-and-forget intelligent function; the storage isn't a developer concern. Override with `MotorConfig(workspace_root="~/.sophia-motor/runs")` or `SOPHIA_MOTOR_WORKSPACE_ROOT=...` for persistence (audit retention, debug, compliance). See [`MotorConfig.workspace_root`](reference.md#motorconfig-fields).
 - **One sub-directory per run**: `run-<unix-ts>-<8 hex>/`
-  - `input.json` — task params + config snapshot + manifests
-  - `trace.json` — final blocks + metadata
-  - `audit/request_001.json` + `audit/response_001.sse` (or `.json` for non-stream)
+  - `input.json` + `trace.json` — only if `MotorConfig.persist_run_metadata=True` (default OFF)
+  - `audit/request_001.json` + `audit/response_001.sse` (or `.json` for non-stream) — only if `MotorConfig.proxy_dump_payloads=True` (default OFF)
   - `agent_cwd/` — the agent's sandboxed working dir (`outputs/` lands here)
   - `.claude/` — CLI subprocess config (motor-managed)
 
-`~/.sophia-motor/` is the user's "motor home" — leave anything outside `runs/` alone (the user may keep notes / drafts there). To wipe runs:
+To wipe runs explicitly (regardless of the OS sweep):
 
 ```python
 motor.clean_runs()                          # delete every run-* dir
@@ -89,10 +88,10 @@ motor.clean_runs(dry_run=True)              # preview, no deletion
 
 ## Container deployment
 
-`~/.sophia-motor/runs/` lives at `Path.home() / ".sophia-motor" / "runs"`. In containers, two things commonly bite:
+In containers, two things commonly bite:
 
-1. `Path.home()` raises if `getpwuid(os.getuid())` fails (ad-hoc UIDs, no `/etc/passwd` entry).
-2. The path is in the writable layer → wiped on container restart.
+1. The default tempdir often lives in the writable layer → wiped on container restart (sometimes you want this; for audit retention you don't).
+2. `Path.home()` raises if `getpwuid(os.getuid())` fails (ad-hoc UIDs, no `/etc/passwd` entry) — only matters if your code explicitly reaches into `~`.
 
 Fix:
 

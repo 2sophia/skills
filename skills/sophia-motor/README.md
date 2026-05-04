@@ -49,7 +49,7 @@ The skill covers:
 
 ## Versioning
 
-The skill version tracks the `sophia-motor` Python package version it was built against. `0.5.0` is built against `sophia-motor==0.5.0`. When the installed Python version differs, the skill instructs Claude to inspect the installed source for ground truth — fail-safe by design.
+The skill version tracks the `sophia-motor` Python package version it was built against. `0.5.1` is built against `sophia-motor==0.5.1`. When the installed Python version differs, the skill instructs Claude to inspect the installed source for ground truth — fail-safe by design.
 
 ## Update
 

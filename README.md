@@ -40,7 +40,7 @@ When future skills land (e.g. `rgci`, `sophia-agent`), they get their own folder
 
 ## Versioning
 
-Each skill tracks the version of the upstream library it documents — `sophia-motor@0.5.0` means the skill content was built against `sophia-motor==0.5.0` Python package. When the installed Python version differs, the skill instructs Claude to inspect the installed source for ground truth.
+Each skill tracks the version of the upstream library it documents — `sophia-motor@0.5.1` means the skill content was built against `sophia-motor==0.5.1` Python package. When the installed Python version differs, the skill instructs Claude to inspect the installed source for ground truth.
 
 ## Contributing a skill
 

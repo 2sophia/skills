@@ -118,10 +118,11 @@ result.output_files[0].copy_to(Path("./final-report.md"))
 
 **`<run>/agent_cwd/` does not stick around.** It can disappear because:
 
+- The default workspace lives in the OS tempdir (e.g. `/tmp/sophia-motor/runs/`) which the OS sweeps on its own schedule (Linux: `systemd-tmpfiles` >10gg; macOS: reboot; Windows: cyclic) — **ephemeral by design**
 - `motor.clean_runs(...)` was called
 - A cron / housekeeping job swept old runs
 - The container was torn down (workspace was on tmpfs)
-- Someone `rm -rf ~/.sophia-motor/runs/`'d
+- Someone `rm -rf` on a custom persistent `workspace_root`
 
 If `OutputFile.path` matters to you beyond the immediate run, **persist it before** any of the above:
 
@@ -152,4 +153,4 @@ async for chunk in motor.stream(task):
 
 - "Should I always set `output_schema`?" → No. Use it when the **caller's downstream code needs typed data**. For dumping to logs, `output_text` is fine.
 - "Why is `output_data` None when I set the schema?" → Either (a) the model errored mid-run (`is_error=True`), or (b) the schema check rejected the structured payload (rare, check `error_reason`). Look at `result.audit_dir` — `response_NNN.sse` shows the raw upstream output.
-- "Why is my file not in `output_files`?" → Did you write it inside `outputs/`? Anything outside is invisible. Verify with `ls $(python -c "from pathlib import Path; print(Path.home() / '.sophia-motor' / 'runs')")`.
+- "Why is my file not in `output_files`?" → Did you write it inside `outputs/`? Anything outside is invisible. Verify with `ls $(python -c "import tempfile; from pathlib import Path; print(Path(tempfile.gettempdir()) / 'sophia-motor' / 'runs')")` (or wherever you pointed `MotorConfig.workspace_root`).

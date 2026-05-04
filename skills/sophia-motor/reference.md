@@ -6,7 +6,7 @@ The ground truth is the installed source. This is a stale-by-design quick lookup
 python -c "import sophia_motor, os; print(os.path.dirname(sophia_motor.__file__))"
 ```
 
-Built against `sophia-motor==0.5.0`.
+Built against `sophia-motor==0.5.1`.
 
 ## Public exports — what's importable from `sophia_motor`
 
@@ -53,7 +53,7 @@ from sophia_motor import (
 | `upstream_base_url` | `"https://api.anthropic.com"` | `SOPHIA_MOTOR_BASE_URL` | Where the proxy POSTs |
 | `upstream_adapter` | `"anthropic"` | `SOPHIA_MOTOR_ADAPTER` | Preset name OR `UpstreamAdapter` instance |
 | `anthropic_version` | `"2023-06-01"` | — | `anthropic-version` header forwarded upstream |
-| `workspace_root` | `~/.sophia-motor/runs` | `SOPHIA_MOTOR_WORKSPACE_ROOT` | Per-run workspace root. **Outside any repo** |
+| `workspace_root` | `<tempdir>/sophia-motor/runs` | `SOPHIA_MOTOR_WORKSPACE_ROOT` | Per-run workspace root. **Ephemeral by default** (OS-managed); set explicitly for persistence. **Outside any repo** |
 | `proxy_enabled` | `True` | — | Local proxy for audit + events. Don't disable in prod |
 | `proxy_host` | `"127.0.0.1"` | `SOPHIA_MOTOR_PROXY_HOST` | Proxy bind host |
 | `proxy_port` | `None` | — | `None` = kernel-assigned (recommended). Set int to pin |
@@ -279,7 +279,7 @@ def clean_runs(
 | `SOPHIA_MOTOR_MODEL` | `model` | `"claude-opus-4-6"` |
 | `SOPHIA_MOTOR_BASE_URL` | `upstream_base_url` | `"https://api.anthropic.com"` |
 | `SOPHIA_MOTOR_ADAPTER` | `upstream_adapter` | `"anthropic"` |
-| `SOPHIA_MOTOR_WORKSPACE_ROOT` | `workspace_root` | `~/.sophia-motor/runs` |
+| `SOPHIA_MOTOR_WORKSPACE_ROOT` | `workspace_root` | `<tempdir>/sophia-motor/runs` (e.g. `/tmp/...`) — ephemeral by default |
 | `SOPHIA_MOTOR_PROXY_HOST` | `proxy_host` | `"127.0.0.1"` |
 | `SOPHIA_MOTOR_CONSOLE_LOG` | `console_log_enabled` | `False` |
 | `SOPHIA_MOTOR_AUDIT_DUMP` | `proxy_dump_payloads` | `False` |

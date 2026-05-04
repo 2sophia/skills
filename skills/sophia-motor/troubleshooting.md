@@ -18,7 +18,7 @@ Verify with `python -c "import os; print(bool(os.getenv('ANTHROPIC_API_KEY')))"`
 **Cause**: cross-filesystem materialization (`EXDEV` errno) → motor falls back from hard-link to symlink → ripgrep doesn't follow symlinks (no `-L` flag passed by the CLI).
 
 **Fix options**:
-- Move the source onto the same filesystem as `MotorConfig.workspace_root` (typically `~/.sophia-motor/`).
+- Move the source onto the same filesystem as `MotorConfig.workspace_root` (default: the OS tempdir, e.g. `/tmp/sophia-motor/...`).
 - Pass the source path directly in the prompt: `"Read /var/data/policy.pdf and ..."` — `Read` doesn't need `Glob` discovery.
 - Inline the content as `dict[str, str]` instead of `Path` if it's small.
 
@@ -56,9 +56,14 @@ See [`adapters.md`](adapters.md) "vLLM caveat" and [`streaming.md`](streaming.md
 
 **Fix**: move `workspace_root` outside any repo:
 ```python
-MotorConfig(workspace_root=Path("/home/me/.sophia-motor/runs"))   # default — outside any repo
-# or
-MotorConfig(workspace_root=Path("/data/runs"))                    # in container with /data mounted
+# Default — uses OS tempdir, always outside any repo:
+MotorConfig()                                                  # /tmp/sophia-motor/runs/ on Linux
+
+# Persistent home path — outside any repo (manual cleanup):
+MotorConfig(workspace_root=Path("/home/me/.sophia-motor/runs"))
+
+# Container with /data mounted:
+MotorConfig(workspace_root=Path("/data/runs"))
 ```
 
 No env var (including `CLAUDE_PROJECT_DIR`) overrides this CLI behaviour. The defaults work — just don't override workspace_root to a location inside a repo.
@@ -76,7 +81,8 @@ See [`installation.md`](installation.md).
 
 Debug:
 ```bash
-ls -la $(python -c "from pathlib import Path; print(Path.home() / '.sophia-motor' / 'runs')") | tail -3
+ls -la $(python -c "import tempfile; from pathlib import Path; print(Path(tempfile.gettempdir()) / 'sophia-motor' / 'runs')") | tail -3
+# (or wherever you pointed MotorConfig.workspace_root)
 # pick the latest run dir
 ls <run-dir>/agent_cwd/outputs/
 ```
@@ -85,7 +91,7 @@ See [`output.md`](output.md).
 
 ## 7. `OutputFile.path` doesn't exist when I try to read it later
 
-**Cause**: the workspace is **transient**. `motor.clean_runs()`, cron sweeps, container teardowns, `rm -rf ~/.sophia-motor/runs/`, tmpfs resets — any of these wipe `<run>/agent_cwd/outputs/`.
+**Cause**: the workspace is **transient by design**. The default lives in the OS tempdir (e.g. `/tmp/sophia-motor/runs/`) and gets swept by `systemd-tmpfiles` (Linux) / reboot (macOS) / cyclic cleanup (Windows). On top of that: `motor.clean_runs()`, cron sweeps, container teardowns, `rm -rf` on a persistent path, tmpfs resets — any of these wipe `<run>/agent_cwd/outputs/`.
 
 **Fix**: persist with `copy_to` BEFORE the workspace dies:
 ```python

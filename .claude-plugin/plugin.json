@@ -1,7 +1,7 @@
 {
   "name": "sophia-motor",
   "description": "Claude Code skill for the sophia-motor Python library: @tool decorator, MotorConfig, RunTask, subagents, in-process MCP integration, structured output, multi-turn chat, custom adapters (Anthropic / vLLM), security guardrail. Tracks the sophia-motor PyPI package version it was built against; the skill instructs Claude to inspect the installed source for ground truth when defaults differ across versions.",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "author": {
     "name": "Sophia AI",
     "url": "https://2sophia.ai"
