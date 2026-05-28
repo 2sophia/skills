@@ -1,0 +1,51 @@
+services:
+
+  # ── MongoDB — dev support service ──────────────────────────────────────────
+  # Brought up by dev-start.sh. In production point APP_MONGODB_URI / MONGODB_URI
+  # at your managed instance instead of running this.
+  mongo:
+    image: mongo:7
+    container_name: myapp-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+
+  # ── App — FastAPI backend + Next.js frontend, one image ────────────────────
+  # GOLD DEPLOY BLOCK — keep commented in dev, uncomment on the prod host.
+  # Pulls the image you built and pushed; `command: ["--frontend"]` runs the
+  # full stack. Drop the command line to run BACKEND-ONLY (API, no UI) from the
+  # exact same image. Put a real .env next to this file on the host.
+  #
+  #  myapp:
+  #    image: your-registry/myapp:0.1.0
+  #    container_name: myapp
+  #    pull_policy: always
+  #    ports:
+  #      - "${APP_BACKEND_PORT:-8000}:8000"
+  #      - "${APP_FRONTEND_PORT:-3000}:3000"
+  #    environment:
+  #      # ── Backend (APP_ prefix) ──
+  #      - APP_DEBUG=${APP_DEBUG:-false}
+  #      - APP_BACKEND_PORT=8000
+  #      - APP_FRONTEND_PORT=3000
+  #      - APP_API_KEY=${APP_API_KEY:-}
+  #      - APP_CORS_ORIGINS=${APP_CORS_ORIGINS:-}
+  #      - APP_MONGODB_URI=${APP_MONGODB_URI:-mongodb://mongo:27017}
+  #      - APP_MONGODB_DB_NAME=${APP_MONGODB_DB_NAME:-myapp}
+  #      # ── Frontend (NextAuth, server-side) ──
+  #      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+  #      - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost:3000}
+  #      - MONGODB_URI=${MONGODB_URI:-mongodb://mongo:27017}
+  #      - AUTH_DB=${AUTH_DB:-myapp}
+  #      - FASTAPI_URL=http://localhost:8000
+  #      - BACKEND_API_KEY=${BACKEND_API_KEY:-}
+  #    depends_on:
+  #      - mongo
+  #    restart: unless-stopped
+  #    command: ["--frontend"]
+
+volumes:
+  mongo_data:
+    driver: local

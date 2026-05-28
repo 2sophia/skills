@@ -1,0 +1,32 @@
+# Copy to .env and adjust. Backend reads APP_* via pydantic-settings; the
+# frontend (NextAuth, server-side) reads the un-prefixed vars below.
+
+# ── Backend (APP_ prefix) ─────────────────────────────────
+APP_NAME=myapp
+APP_VERSION=0.1.0
+APP_DEBUG=false
+APP_BACKEND_PORT=8000
+APP_FRONTEND_PORT=3000
+
+# Bearer-token gate on the API. Empty = disabled (trusted network / dev).
+APP_API_KEY=
+# CORS allowlist (comma-separated). Empty = localhost dev origins.
+APP_CORS_ORIGINS=
+
+# MongoDB (backend)
+APP_MONGODB_URI=mongodb://localhost:27017
+APP_MONGODB_DB_NAME=myapp
+
+# ── Frontend Auth (NextAuth, server-side — no APP_ prefix) ──
+NEXTAUTH_SECRET=change-me-in-production
+NEXTAUTH_URL=http://localhost:3000
+# MongoDB used by NextAuth — can be the same instance as the backend.
+MONGODB_URI=mongodb://localhost:27017
+AUTH_DB=myapp
+# Backend URL the Next proxy forwards to (server-side only).
+FASTAPI_URL=http://localhost:8000
+# Optional: forwarded as Bearer to the backend (must match APP_API_KEY).
+BACKEND_API_KEY=
+# Optional: restrict the first-admin bootstrap to this single email.
+# Empty = the very first user to sign in becomes admin.
+BOOTSTRAP_ADMIN_EMAIL=

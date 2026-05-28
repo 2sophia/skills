@@ -17,7 +17,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/2sophia/skills.git",
-    "directory": "skills/sophia-motor"
+    "directory": "plugins/sophia-motor/skills/sophia-motor"
   },
   "bugs": {
     "url": "https://github.com/2sophia/skills/issues"

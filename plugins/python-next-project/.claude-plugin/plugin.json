@@ -1,0 +1,24 @@
+{
+  "name": "python-next-project",
+  "description": "Claude Code skill that guides scaffolding of production-grade, Docker-containerized applications with a Python backend and a Next.js frontend: project layout, multi-stage Dockerfiles, docker-compose, environment/secrets handling, and the gold-standard conventions to get right from day one.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Sophia AI",
+    "url": "https://2sophia.ai"
+  },
+  "homepage": "https://github.com/2sophia/skills",
+  "repository": "https://github.com/2sophia/skills",
+  "license": "MIT",
+  "keywords": [
+    "claude",
+    "claude-code",
+    "python",
+    "nextjs",
+    "docker",
+    "docker-compose",
+    "scaffolding",
+    "fastapi",
+    "production",
+    "containerization"
+  ]
+}

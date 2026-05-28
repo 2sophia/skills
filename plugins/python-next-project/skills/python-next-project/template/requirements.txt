@@ -1,0 +1,15 @@
+# Web framework
+fastapi>=0.115.0
+uvicorn[standard]>=0.34.0
+
+# Settings & validation
+pydantic>=2.10.0
+pydantic-settings>=2.7.0
+python-dotenv>=1.0.1          # required by pydantic-settings for .env files
+
+# MongoDB (async)
+motor>=3.7.0
+pymongo>=4.10.0
+
+# Pretty startup banner / logs
+rich>=13.0.0

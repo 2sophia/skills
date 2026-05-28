@@ -15,21 +15,26 @@ Inside a Claude Code session:
 
 | Skill | What it teaches | Source |
 |---|---|---|
-| **`sophia-motor`** | How to use the [`sophia-motor`](https://github.com/2sophia/motor) Python library: `@tool` decorator, `MotorConfig`, `RunTask`, subagents, in-process MCP, structured output, multi-turn chat, audit dump, security guardrail. | [`skills/sophia-motor/`](./skills/sophia-motor/) |
+| **`sophia-motor`** | How to use the [`sophia-motor`](https://github.com/2sophia/motor) Python library: `@tool` decorator, `MotorConfig`, `RunTask`, subagents, in-process MCP, structured output, multi-turn chat, audit dump, security guardrail. | [`plugins/sophia-motor/`](./plugins/sophia-motor/) |
+| **`python-next-project`** | How to scaffold a production-grade, Docker-containerized app with a Python backend and a Next.js frontend: project layout, multi-stage Dockerfiles, compose, env/secrets, and the gold-standard conventions. | [`plugins/python-next-project/`](./plugins/python-next-project/) |
 
 ## Repository layout
 
 ```
 .claude-plugin/
-├── marketplace.json    ← read by `/plugin marketplace add 2sophia/skills`
-└── plugin.json         ← single-plugin metadata (oggi only sophia-motor)
-skills/
-└── <skill-name>/       ← one folder per skill, each with its own SKILL.md
+└── marketplace.json              ← marketplace index, read by `/plugin marketplace add 2sophia/skills`
+plugins/                          ← one folder per plugin (set as `pluginRoot` in marketplace.json)
+├── sophia-motor/
+│   ├── .claude-plugin/plugin.json
+│   └── skills/sophia-motor/      ← SKILL.md + sub-docs
+└── python-next-project/
+    ├── .claude-plugin/plugin.json
+    └── skills/python-next-project/
 README.md
 LICENSE
 ```
 
-When future skills land (e.g. `rgci`, `sophia-agent`), they get their own folder under `skills/` and their own entry in `marketplace.json`.
+Each plugin is independently installable. When future plugins land (e.g. `rgci`, `sophia-agent`), they get their own folder under `plugins/` and their own entry in `marketplace.json`.
 
 ## Update / uninstall
 
@@ -44,9 +49,10 @@ Each skill tracks the version of the upstream library it documents — `sophia-m
 
 ## Contributing a skill
 
-PRs welcome. Each new skill needs:
-- `skills/<name>/SKILL.md` with frontmatter (`name`, `description`)
-- An entry in `.claude-plugin/marketplace.json`
+PRs welcome. Each new plugin needs:
+- A folder `plugins/<name>/` with `.claude-plugin/plugin.json` (minimal: `{ "name": "<name>" }`)
+- One or more skills at `plugins/<name>/skills/<skill>/SKILL.md` with frontmatter (`name`, `description`)
+- An entry in the `plugins[]` array of `.claude-plugin/marketplace.json` (with `pluginRoot` set, `source` is just the folder name)
 - A row in this README's "Available skills" table
 
 ## License
