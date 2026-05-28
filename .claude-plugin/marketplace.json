@@ -4,18 +4,15 @@
     "name": "Sophia AI",
     "url": "https://2sophia.ai"
   },
-  "metadata": {
-    "pluginRoot": "./plugins"
-  },
   "plugins": [
     {
       "name": "sophia-motor",
-      "source": "sophia-motor",
+      "source": "./plugins/sophia-motor",
       "description": "Claude Code skill for the sophia-motor Python library — teaches your local Claude how to build production agents with @tool decorator, MotorConfig, RunTask, subagents, in-process MCP, structured output, multi-turn chat."
     },
     {
       "name": "python-next-project",
-      "source": "python-next-project",
+      "source": "./plugins/python-next-project",
       "description": "Claude Code skill that guides scaffolding of production-grade, Docker-containerized applications with a Python backend and a Next.js frontend — project layout, Dockerfiles, compose, and the gold-standard conventions to get right from day one."
     }
   ]

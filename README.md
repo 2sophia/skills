@@ -8,7 +8,15 @@ Inside a Claude Code session:
 
 ```
 /plugin marketplace add 2sophia/skills
-/plugin install <skill-name>
+/plugin install <plugin-name>        # e.g. sophia-motor or python-next-project
+```
+
+**Already added this marketplace before?** New plugins won't show up until you
+refresh it — run `update` first:
+
+```
+/plugin marketplace update 2sophia/skills
+/plugin install python-next-project
 ```
 
 ## Available skills
@@ -23,7 +31,7 @@ Inside a Claude Code session:
 ```
 .claude-plugin/
 └── marketplace.json              ← marketplace index, read by `/plugin marketplace add 2sophia/skills`
-plugins/                          ← one folder per plugin (set as `pluginRoot` in marketplace.json)
+plugins/                          ← one folder per plugin (referenced by `source` in marketplace.json)
 ├── sophia-motor/
 │   ├── .claude-plugin/plugin.json
 │   └── skills/sophia-motor/      ← SKILL.md + sub-docs
@@ -39,9 +47,14 @@ Each plugin is independently installable. When future plugins land (e.g. `rgci`,
 ## Update / uninstall
 
 ```
-/plugin update sophia-motor
-/plugin uninstall sophia-motor
+/plugin marketplace update 2sophia/skills    # pull the latest index (new + updated plugins)
+/plugin update <plugin-name>                  # update an installed plugin
+/plugin uninstall <plugin-name>               # remove it
 ```
+
+Updating the **marketplace** refreshes the catalog (so newly added plugins like
+`python-next-project` appear); updating a **plugin** pulls the latest version of
+one you already installed.
 
 ## Versioning
 
@@ -52,7 +65,7 @@ Each skill tracks the version of the upstream library it documents — `sophia-m
 PRs welcome. Each new plugin needs:
 - A folder `plugins/<name>/` with `.claude-plugin/plugin.json` (minimal: `{ "name": "<name>" }`)
 - One or more skills at `plugins/<name>/skills/<skill>/SKILL.md` with frontmatter (`name`, `description`)
-- An entry in the `plugins[]` array of `.claude-plugin/marketplace.json` (with `pluginRoot` set, `source` is just the folder name)
+- An entry in the `plugins[]` array of `.claude-plugin/marketplace.json` (`source` is the relative path, e.g. `./plugins/<name>`)
 - A row in this README's "Available skills" table
 
 ## License
